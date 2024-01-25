@@ -1,0 +1,66 @@
+import random
+
+class SistemaViagem:
+    def __init__(self):
+        self.acoes_por_dia = 0
+        self.perigo = 0
+
+    def configurar_viagem(self):
+        self.acoes_por_dia = int(input("Quantas ações por dia? "))
+        perigo_opcoes = ["Baixo", "Mediano", "Alto", "Extremo"]
+        perigo_input = input(f"Escolha o nível de perigo ({', '.join(perigo_opcoes)}): ")
+        self.perigo = perigo_input.capitalize()
+
+    def rolar_dado(self):
+        return random.randint(1, 20)
+
+    def calcular_porcentagem_batalha(self, dificuldade):
+        porcentagem_base = 10  # Valor base para porcentagem
+        return porcentagem_base + dificuldade
+
+    def realizar_acao(self, acao):
+        porcentagem_batalha = self.calcular_porcentagem_batalha(self.mapear_dificuldade())
+
+        print(f"\nRealizando ação {acao}...")
+        print(f"Rola o dado para verificar se ocorre uma batalha...")
+        resultado_dado = self.rolar_dado()
+
+        if resultado_dado <= porcentagem_batalha:
+            print("Batalha iniciada!")
+            # Lógica da batalha aqui
+        else:
+            print("Nenhuma batalha ocorreu.")
+
+    def descansar(self):
+        porcentagem_batalha = self.calcular_porcentagem_batalha(self.mapear_dificuldade())
+
+        print("\nDescansando...")
+        print("Rola o dado para verificar se ocorre uma batalha durante o descanso...")
+        resultado_dado = self.rolar_dado()
+
+        if resultado_dado <= porcentagem_batalha:
+            print("Ataque surpresa durante o descanso!")
+            # Lógica do ataque surpresa aqui
+        else:
+            print("Descanso tranquilo, sem surpresas.")
+
+    def encerrar_dia(self):
+        for acao in range(self.acoes_por_dia):
+            self.realizar_acao(acao + 1)
+
+        self.descansar()
+
+    def mapear_dificuldade(self):
+        dificuldades = {"Baixo": -5, "Mediano": 0, "Alto": 5, "Extremo": 10}
+        return dificuldades.get(self.perigo, 0)
+
+# Exemplo de uso:
+sistema_viagem = SistemaViagem()
+
+while True:
+    sistema_viagem.configurar_viagem()
+    sistema_viagem.encerrar_dia()
+
+    reiniciar = input("Deseja reiniciar a viagem? (S/N) ").upper()
+    if reiniciar != 'S':
+        break
